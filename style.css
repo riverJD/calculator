@@ -12,7 +12,8 @@ html, body{
 
 
 .number,
-.operator{
+.operator,
+.equals{
     background-color:slategray;
     color: white;
     font-size: 24px;
@@ -95,9 +96,16 @@ html, body{
 
 }
 
+
 .operator{
     flex: 1;
     background-color: rgb(70, 87, 104);
+}
+
+.equals{
+    flex: 2;
+    font-size: 40px;
+    background-color: rgb(81, 120, 158)
 }
 
 
