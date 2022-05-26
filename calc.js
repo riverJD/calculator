@@ -1,5 +1,16 @@
 
 const numPad = document.querySelector('.numpad')
+const screen = document.querySelector('.screen')
+
+let calculation = {
+    num1 : 0,
+    num2 : 0,
+    operator : add(),
+    total : operate(operator, num1, num2)
+}
+
+
+let displayNumber = 0;
 
 console.log(numPad);
 function add(a, b){
@@ -23,6 +34,11 @@ function operate(opFunction, a, b){
     return (opFunction(a, b))
 }
 
+function refreshScreen(){
+    screen.textContent = displayNumber;
+}
+
+refreshScreen();
 
 function createNumpad(){
          
@@ -40,10 +56,6 @@ function createNumpad(){
         numPad.insertBefore(numButton, numPad.lastChild);
         }
     }
-    const enterKey = document.createElement('button');
-    setAttributes(enterKey, {'class' : 'operator', 'id': 'enter'});
-    enterKey.textContent = '=';
-    numPad.appendChild(enterKey);
 
  
 }
