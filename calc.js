@@ -9,6 +9,7 @@ let calculation = {
     num1 : 0,
     num2 : 0,
     operator : ""
+
 }
 
 
@@ -48,9 +49,14 @@ function refreshScreen(){
     if (digits[0] == 0 && digits[1]){
         digits.shift();
     }
-    displayNumber = digits.join('');
     screen.textContent = displayNumber;
 }
+
+function clearDigits(){
+    displayNumber = digits.join('');
+}
+
+
 
 // Clear array and refresh screen
 function resetScreen(){
@@ -88,12 +94,10 @@ createNumpad();
 const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {
+        
+  
         calculation.num1 = parseInt(digits.join(""));
-        console.log(calculation.num1);
-
-        calculation.operator = `${operator.id}`;
-        console.log(calculation.operator);
-        console.log(calculation.operator);
+        calculation.operator = window[`${operator.id}`]
         digits = []
         refreshScreen();
         
@@ -105,7 +109,9 @@ const equals = document.querySelector('#equals');
     equals.addEventListener('click', () => {
         calculation.num2 = parseInt(digits.join(""));
         console.log(calculation.num2);
-        console.log(operate(calculation.operator, calculation.num1, calculation.num2));
+        displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
+        console.log(displayNumber)
+        screen.textContent = displayNumber;
     })
 
 
