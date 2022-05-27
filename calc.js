@@ -9,7 +9,8 @@ let calculation = {
     num1 : null,
     num2 : null,
     total : 0,
-    operator : ""
+    operator : "",
+    errorFlag : 0
 
 }
 
@@ -25,18 +26,38 @@ function subtract(a, b){
 }
 
 function multiply(a, b){
-    return a * b;
+    
+    console.log(b);
+   
+    
+    if (b != null){
+        return a * b
+    }
+    else {return a}
+    
+  
 }
 
 function divide(a, b){
-    return a / b;
+    
+    if (b === 0){
+        //displayNumber = "NO DIV ZERO BUD"
+        calculation.errorFlag = 1;
+        return "NO DIV ZERO BUD"
+        
+    }
+
+
+    if (b != null){
+        return a / b
+    }
+    else {return a}
 }
 
 
 function operate(opFunction, a, b){
     return (opFunction(a, b))
 }
-
 
 // Update screen
 function refreshScreen(){
@@ -52,12 +73,16 @@ function clearDigits(){
 
 
 // Clear array and refresh screen
-function resetScreen(){
-    digits = []
+function resetCalculator(){
+    digits = ''
     displayNumber = 0
-    calculation.num1, calculation.num2 = null; 
+    calculation.num1 = null
+    calculation.num2 = null
+    calculation.operator = ""
+    calculation.total = null
+    calculation.errorFlag = 0;
     
-    refreshScreen()
+   
 }
 
 // Generate DIV/Buttons for numpad
@@ -90,40 +115,41 @@ function arrayToScreen(){
 
 
 
+
 // Store value currently on the screen, along with operator pressed,
 // in object for future manipulation
 const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
-
-    
-
-        if (calculation.num1 != null){
-            equal();
-            digits = ''
-            if (calculation.operator != window[`${operator.id}`]){
-                calculation.num2 = null
-            }
-
+       if (calculation.errorFlag != 0){
+           return;
+       }
+       
+       equal();
+        digits = ''
+        if (calculation.operator != window[`${operator.id}`]){
             
+            calculation.num2 = null
         }
+  
         digits = ''
         
         calculation.operator = window[`${operator.id}`]
         calculation.num1 = displayNumber
 
-
+    
     })
-
 })
-
-
 
 const equalButton = document.querySelector('#equals');
     equalButton.addEventListener('click', () => {
       
-       
+        if (calculation.errorFlag != 0){
+            return;
+        }
+
+
         if (calculation.num1 != null){
         equal();
         calculation.num1 = null;
@@ -134,17 +160,17 @@ const equalButton = document.querySelector('#equals');
     })
 
 
-
 function equal(){
+    if (calculation.num1 != null){
     console.log('=')
     if (digits.length > 0){
     calculation.num2 = parseInt(digits);
     }
     calculation.total = operate(calculation.operator, calculation.num1, calculation.num2)
-
     displayNumber = calculation.total;
 
     refreshScreen();
+}
 
 
 }
@@ -155,6 +181,10 @@ const numberInput = document.querySelectorAll('.number');
 numberInput.forEach(num => {
     num.addEventListener('click', () => {
         
+        if (calculation.errorFlag != 0){
+            return;
+        }
+
         // Cap screen size
         if (digits.length < 8){
         digits += (num.getAttribute('data-num'));
@@ -168,7 +198,8 @@ numberInput.forEach(num => {
 const clearBtn = document.querySelector('#clear');
 clearBtn.addEventListener('click', () => {
     console.log('click')
-    resetScreen();
+    resetCalculator();
+    refreshScreen();
 });
 
 
