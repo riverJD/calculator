@@ -13,11 +13,7 @@ let calculation = {
 
 }
 
-
-
 let displayNumber;
-
-
 
 //console.log(numPad);
 function add(a, b){
@@ -46,7 +42,6 @@ function operate(opFunction, a, b){
 function refreshScreen(){
 
     // Remove leading 0s if theye exist
-
     screen.textContent = displayNumber;
 }
 
@@ -101,79 +96,38 @@ const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
+
+        if (calculation.num1 != null){
+            equal();
+            digits = ''
+        }
+    
        
-        
-        if (calculation.num1 == null){
-            calculation.operator = window[`${operator.id}`]
-            calculation.num1 = displayNumber;
-            console.log("A:" + calculation.num1);
-            digits = ""
-            displayNumber = digits
-            screen.textContent = displayNumber;
+        calculation.num1 = displayNumber
+        calculation.operator = window[`${operator.id}`]
+        digits = ''
 
-        }
-        else if (calculation.num2 == null){
-            calculation.num2 = displayNumber;
-            console.log("B:" + calculation.num2)
-            displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-            calculation.num1 = displayNumber;
-            screen.textContent = displayNumber;
-
-        }
-        else {
-            if (calculation.operator == window[`${operator.id}`]){
-                console.log('calc...')
-                
-                displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-                calculation.num1 = displayNumber;
-                screen.textContent = displayNumber;
-            }
-            else{
-                calculation.operator = window[`${operator.id}`]
-                console.log("changed op")
-                calculation.num2 = null
-                digits = ""
-                displayNumber = digits;
-                screen.textContent = displayNumber;
-
-            }
-        }
-
-
-        //calculation.operator = window[`${operator.id}`]
-   
-
-  
-  
-  
     })
 
 })
 
 
-function repeatLastOperation(){
-    displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-    screen.textContent = displayNumber;
-    calculation.num1 = displayNumber;
-    console.log("rpt")
-
-
-}
-
 
 const equalButton = document.querySelector('#equals');
     equalButton.addEventListener('click', () => {
         equal();
+
     })
 
 
 
 function equal(){
     calculation.num2 = parseInt(digits);
-        displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-        screen.textContent = displayNumber;
-        calculation.num1 = displayNumber;
-        console.log(calculation.operator)
+    calculation.total = operate(calculation.operator, calculation.num1, calculation.num2)
+
+    displayNumber = calculation.total;
+
+    refreshScreen();
 
 }
 
