@@ -2,12 +2,12 @@
 const numPad = document.querySelector('.numpad')
 const screen = document.querySelector('.screen')
 
-let digits = []
+let digits = "";
 
 
 let calculation = {
-    num1 : 0,
-    num2 : 0,
+    num1 : null,
+    num2 : null,
     operator : ""
 
 }
@@ -37,7 +37,6 @@ function divide(a, b){
 
 
 function operate(opFunction, a, b){
-    console.log(opFunction)
     return (opFunction(a, b))
 }
 
@@ -46,9 +45,7 @@ function operate(opFunction, a, b){
 function refreshScreen(){
 
     // Remove leading 0s if theye exist
-    if (digits[0] == 0 && digits[1]){
-        digits.shift();
-    }
+
     screen.textContent = displayNumber;
 }
 
@@ -62,7 +59,7 @@ function clearDigits(){
 function resetScreen(){
     digits = []
     displayNumber = 0
-    calculation.num1, calculation.num2 = 0; 
+    calculation.num1, calculation.num2 = null; 
     
     refreshScreen()
 }
@@ -91,21 +88,43 @@ function createNumpad(){
 createNumpad();
 
 
+function arrayToScreen(){
+
+}
+
+
 
 // Store value currently on the screen, along with operator pressed,
 // in object for future manipulation
 const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
-    operator.addEventListener('click', () => {
+    operator.addEventListener('click', () => {  
+        
+        console.log(displayNumber);
+        
+        calculation.num1 = displayNumber;
+        digits = '';
+        calculation.operator = window[`${operator.id}`]
+
+
+        
         
   
-        calculation.num1 = parseInt(digits.join(""));
-        calculation.operator = window[`${operator.id}`]
-        digits = []
-        refreshScreen();
-        
+  
+  
     })
+
 })
+
+
+function repeatLastOperation(){
+    displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
+    screen.textContent = displayNumber;
+    calculation.num1 = displayNumber;
+    console.log("rpt")
+
+
+}
 
 
 const equalButton = document.querySelector('#equals');
@@ -116,12 +135,11 @@ const equalButton = document.querySelector('#equals');
 
 
 function equal(){
-    calculation.num2 = parseInt(digits.join(""));
-        console.log(calculation.num2);
+    calculation.num2 = parseInt(digits);
         displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-        console.log(displayNumber)
         screen.textContent = displayNumber;
         calculation.num1 = displayNumber;
+        console.log(calculation.operator)
 
 }
 
@@ -133,8 +151,9 @@ numberInput.forEach(num => {
         
         // Cap screen size
         if (digits.length < 8){
-        digits.push(num.getAttribute('data-num'));
-        displayNumber =  parseInt(digits.join(""));
+        digits += (num.getAttribute('data-num'));
+        console.log(digits);
+        displayNumber =  parseInt(digits);
         refreshScreen();
         }
     })
