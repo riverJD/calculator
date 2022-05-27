@@ -61,6 +61,9 @@ function clearDigits(){
 // Clear array and refresh screen
 function resetScreen(){
     digits = []
+    displayNumber = 0
+    calculation.num1, calculation.num2 = 0; 
+    
     refreshScreen()
 }
 
@@ -105,14 +108,22 @@ operation.forEach(operator => {
 })
 
 
-const equals = document.querySelector('#equals');
-    equals.addEventListener('click', () => {
-        calculation.num2 = parseInt(digits.join(""));
+const equalButton = document.querySelector('#equals');
+    equalButton.addEventListener('click', () => {
+        equal();
+    })
+
+
+
+function equal(){
+    calculation.num2 = parseInt(digits.join(""));
         console.log(calculation.num2);
         displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
         console.log(displayNumber)
         screen.textContent = displayNumber;
-    })
+        calculation.num1 = displayNumber;
+
+}
 
 
 // store as an array for easy manipulation and display
@@ -123,7 +134,7 @@ numberInput.forEach(num => {
         // Cap screen size
         if (digits.length < 8){
         digits.push(num.getAttribute('data-num'));
-        console.log(displayNumber)
+        displayNumber =  parseInt(digits.join(""));
         refreshScreen();
         }
     })
