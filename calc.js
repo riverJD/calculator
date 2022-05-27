@@ -8,6 +8,7 @@ let digits = "";
 let calculation = {
     num1 : null,
     num2 : null,
+    total : null,
     operator : ""
 
 }
@@ -100,26 +101,48 @@ const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
-
+       
+        
         if (calculation.num1 == null){
-  
-        console.log(displayNumber);
-        calculation.num1 = displayNumber;
-        digits = '';
-        calculation.operator = window[`${operator.id}`]
+            calculation.operator = window[`${operator.id}`]
+            calculation.num1 = displayNumber;
+            console.log("A:" + calculation.num1);
+            digits = ""
+            displayNumber = digits
+            screen.textContent = displayNumber;
+
         }
-        else{
+        else if (calculation.num2 == null){
             calculation.num2 = displayNumber;
+            console.log("B:" + calculation.num2)
             displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
-
-            console.log(displayNumber)
-            digits = '';
-           // screen.textContent = displayNumber;
+            calculation.num1 = displayNumber;
+            screen.textContent = displayNumber;
 
         }
+        else {
+            if (calculation.operator == window[`${operator.id}`]){
+                console.log('calc...')
+                
+                displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
+                calculation.num1 = displayNumber;
+                screen.textContent = displayNumber;
+            }
+            else{
+                calculation.operator = window[`${operator.id}`]
+                console.log("changed op")
+                calculation.num2 = null
+                digits = ""
+                displayNumber = digits;
+                screen.textContent = displayNumber;
 
-        
-        
+            }
+        }
+
+
+        //calculation.operator = window[`${operator.id}`]
+   
+
   
   
   
