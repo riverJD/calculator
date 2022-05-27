@@ -8,7 +8,7 @@ let digits = "";
 let calculation = {
     num1 : null,
     num2 : null,
-    total : null,
+    total : 0,
     operator : ""
 
 }
@@ -97,15 +97,22 @@ operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
 
+    
+
         if (calculation.num1 != null){
             equal();
             digits = ''
+            if (calculation.operator != window[`${operator.id}`]){
+                calculation.num2 = null
+            }
+
+            
         }
-    
-       
-        calculation.num1 = displayNumber
-        calculation.operator = window[`${operator.id}`]
         digits = ''
+        
+        calculation.operator = window[`${operator.id}`]
+        calculation.num1 = displayNumber
+
 
     })
 
@@ -115,19 +122,30 @@ operation.forEach(operator => {
 
 const equalButton = document.querySelector('#equals');
     equalButton.addEventListener('click', () => {
+      
+       
+        if (calculation.num1 != null){
         equal();
+        calculation.num1 = null;
+        calculation.num2 = null;
+        }
 
+       
     })
 
 
 
 function equal(){
+    console.log('=')
+    if (digits.length > 0){
     calculation.num2 = parseInt(digits);
+    }
     calculation.total = operate(calculation.operator, calculation.num1, calculation.num2)
 
     displayNumber = calculation.total;
 
     refreshScreen();
+
 
 }
 
