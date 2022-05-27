@@ -100,12 +100,23 @@ const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
+
+        if (calculation.num1 == null){
+  
         console.log(displayNumber);
-        
         calculation.num1 = displayNumber;
         digits = '';
         calculation.operator = window[`${operator.id}`]
+        }
+        else{
+            calculation.num2 = displayNumber;
+            displayNumber = operate(calculation.operator, calculation.num1, calculation.num2)
 
+            console.log(displayNumber)
+            digits = '';
+           // screen.textContent = displayNumber;
+
+        }
 
         
         
