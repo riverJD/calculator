@@ -2,10 +2,15 @@
 const numPad = document.querySelector('.numpad')
 const screen = document.querySelector('.screen')
 
+// string to hold our user input
 let digits = "";
 
 const MAX_SCREEN_LENGTH = 14;
 
+// what will be displayed on refresh
+let displayNumber;
+
+// object to hold our calculations
 let calculation = {
     num1 : null,
     num2 : null,
@@ -15,9 +20,6 @@ let calculation = {
 
 }
 
-let displayNumber;
-
-//console.log(numPad);
 function add(a, b){
     return a + b;
 }
@@ -28,9 +30,7 @@ function subtract(a, b){
 
 function multiply(a, b){
     
-
-   
-    
+    // Make sure there is something to multiply against so we don't zero with a null
     if (b != null){
         return a * b
     }
@@ -41,12 +41,11 @@ function multiply(a, b){
 
 function divide(a, b){
     
+    // can't divide by zero
     if (b === 0){
-        //displayNumber = "NO DIV ZERO BUD"
         calculation.errorFlag = 1;
         displayNumber = "NO DIV ZERO :(";
         return;
-        
     }
 
     if (b != null){
@@ -63,8 +62,6 @@ function operate(opFunction, a, b){
 // Update screen
 function refreshScreen(){
 
-    // Remove leading 0s if theye exist
-
     if (digits.length > 0){
         displayNumber = parseFloat(digits)
     }
@@ -72,9 +69,7 @@ function refreshScreen(){
     const displayText = displayNumber.toString();
 
     const places = displayText.indexOf('.')
-    //console.log(displayText.length)
-    // 12345678.00
-    // 12.00000000
+
     // Will decide how many decimal places to show based on availible screen length. 
     // A larger number will allow for less decimal spaces. 
     if (displayText.length <= MAX_SCREEN_LENGTH ) {
@@ -86,11 +81,8 @@ function refreshScreen(){
 
 }
 
-function clearDigits(){
-    displayNumber = digits.join('');
-}
 
-// Clear array and refresh screen
+// Clear all variables
 function resetCalculator(){
     digits = ''
     displayNumber = 0
@@ -142,6 +134,9 @@ operation.forEach(operator => {
        if (calculation.errorFlag != 0){
            return;
        }
+
+       lightButton(operator);
+
        
        equal();
      
@@ -210,11 +205,12 @@ numberInput.forEach(num => {
             return;
         }
 
+        // Don't allow multiple decimals
         if (num.getAttribute('data-num') == '.' && digits.includes('.')){
             return;
         }
 
-        // Cap screen size
+        // cap entry length
         if (digits.length < 10){
         digits += (num.getAttribute('data-num'));
         displayNumber =  parseFloat(digits);
@@ -239,7 +235,7 @@ backBtn.addEventListener('click', () => {
 })
 
 
-// Helper functiodn
+// Helper function
 // Set multiple attributes from one function call
 function setAttributes(element, attributes)
 {
@@ -248,10 +244,7 @@ function setAttributes(element, attributes)
     });
 }
 
+function lightButton(button){
+    console.log(button)
+}
 
-/*
-console.log(add(10, 2));
-console.log(subtract(10,2));
-console.log(multiply(10,2));
-console.log(divide(10,2));
-*/
