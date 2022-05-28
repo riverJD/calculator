@@ -4,6 +4,7 @@ const screen = document.querySelector('.screen')
 
 let digits = "";
 
+const MAX_SCREEN_LENGTH = 14;
 
 let calculation = {
     num1 : null,
@@ -27,7 +28,7 @@ function subtract(a, b){
 
 function multiply(a, b){
     
-    console.log(b);
+
    
     
     if (b != null){
@@ -43,10 +44,10 @@ function divide(a, b){
     if (b === 0){
         //displayNumber = "NO DIV ZERO BUD"
         calculation.errorFlag = 1;
-        return "NO DIV ZERO BUD"
+        displayNumber = "NO DIV ZERO :(";
+        return;
         
     }
-
 
     if (b != null){
         return a / b
@@ -63,14 +64,31 @@ function operate(opFunction, a, b){
 function refreshScreen(){
 
     // Remove leading 0s if theye exist
-    screen.textContent = displayNumber;
+
+    if (digits.length > 0){
+        displayNumber = parseFloat(digits)
+    }
+
+    const displayText = displayNumber.toString();
+
+    const places = displayText.indexOf('.')
+    //console.log(displayText.length)
+    // 12345678.00
+    // 12.00000000
+    // Will decide how many decimal places to show based on availible screen length. 
+    // A larger number will allow for less decimal spaces. 
+    if (displayText.length <= MAX_SCREEN_LENGTH ) {
+        screen.textContent = Number((displayNumber).toFixed(MAX_SCREEN_LENGTH - places));
+    }
+    else {
+        screen.textContent = (displayNumber.toExponential(6));
+    }
+
 }
 
 function clearDigits(){
     displayNumber = digits.join('');
 }
-
-
 
 // Clear array and refresh screen
 function resetCalculator(){
@@ -82,7 +100,6 @@ function resetCalculator(){
     calculation.total = null
     calculation.errorFlag = 0;
     
-   
 }
 
 // Generate DIV/Buttons for numpad
@@ -101,19 +118,18 @@ function createNumpad(){
 
         numPad.insertBefore(numButton, numPad.lastChild);
         }
+        
     }
+
+    const periodButton = document.createElement('button')
+    setAttributes(periodButton, {'class' : 'number', 'id': `period`, 'data-num': '.'});
+    periodButton.textContent = '.'
+    numPad.appendChild(periodButton)
 
  
 }
 
 createNumpad();
-
-
-function arrayToScreen(){
-
-}
-
-
 
 
 // Store value currently on the screen, along with operator pressed,
@@ -122,25 +138,26 @@ const operation = document.querySelectorAll('.operator');
 operation.forEach(operator => {
     operator.addEventListener('click', () => {  
         
+     // Force CE if error
        if (calculation.errorFlag != 0){
            return;
        }
        
        equal();
-        digits = ''
+     
+       // If user changes operator, don't halt further calculations
+       // until a new "second" number is used.
         if (calculation.operator != window[`${operator.id}`]){
             
             calculation.num2 = null
         }
-  
-        digits = ''
-        
         calculation.operator = window[`${operator.id}`]
         calculation.num1 = displayNumber
-
-    
+        digits = ''
     })
 })
+
+
 
 const equalButton = document.querySelector('#equals');
     equalButton.addEventListener('click', () => {
@@ -149,34 +166,42 @@ const equalButton = document.querySelector('#equals');
             return;
         }
 
-
-        if (calculation.num1 != null){
+        // Perform operation, and then reset inputs so the 
+        // equal sign button only works once. 
         equal();
         calculation.num1 = null;
         calculation.num2 = null;
-        }
-
-       
+               
     })
 
 
+// Used by both the equal button and operators when operating on 
+// a running total
 function equal(){
-    if (calculation.num1 != null){
-    console.log('=')
-    if (digits.length > 0){
-    calculation.num2 = parseInt(digits);
+
+    if (calculation.num1 != null){     
+        
+        // Assign entered numbers if they exist, otherwise use numbers already stored
+        if (digits.length > 0){
+            calculation.num2 = parseFloat(digits);
+        }
+        digits = ''
+        calculation.total = operate(calculation.operator, calculation.num1, calculation.num2)
+        
+        if (calculation.errorFlag != 0){
+            refreshScreen();
+            return;
+        }
+        displayNumber = calculation.total;
+
+        refreshScreen();
     }
-    calculation.total = operate(calculation.operator, calculation.num1, calculation.num2)
-    displayNumber = calculation.total;
-
-    refreshScreen();
-}
 
 
 }
 
 
-// store as an array for easy manipulation and display
+// Store number as a string for easy manipulation and display
 const numberInput = document.querySelectorAll('.number');
 numberInput.forEach(num => {
     num.addEventListener('click', () => {
@@ -185,11 +210,14 @@ numberInput.forEach(num => {
             return;
         }
 
+        if (num.getAttribute('data-num') == '.' && digits.includes('.')){
+            return;
+        }
+
         // Cap screen size
-        if (digits.length < 8){
+        if (digits.length < 10){
         digits += (num.getAttribute('data-num'));
-        console.log(digits);
-        displayNumber =  parseInt(digits);
+        displayNumber =  parseFloat(digits);
         refreshScreen();
         }
     })
@@ -201,6 +229,14 @@ clearBtn.addEventListener('click', () => {
     resetCalculator();
     refreshScreen();
 });
+
+const backBtn = document.querySelector('#back');
+backBtn.addEventListener('click', () => {
+    console.log('back');
+    console.log(digits)
+    digits = digits.slice(0, -1)
+    refreshScreen();
+})
 
 
 // Helper functiodn
